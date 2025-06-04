@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
-    <!-- Application Structure Plan: Aplikasi ini dirancang sebagai SPA (Single-Page Application) dengan navigasi vertikal di sisi kiri (desktop) atau header (mobile) untuk memandu pengguna melalui alur belajar yang logis. Struktur ini tidak mengikuti urutan slide PPT secara kaku, melainkan mengelompokkan konten secara tematis untuk pemahaman yang lebih baik: 0. Instalasi, 1. Pengenalan (konsep dasar), 2. Visualisasi Konsep Inti (interaktif), 3. Alur Kerja Praktis (simulator), 4. Kolaborasi Tim (visualisasi), 5. Tips & Kesalahan Umum, dan 6. Perintah Bermanfaat. Pendekatan ini dipilih agar pengguna dapat belajar secara bertahap atau langsung melompat ke topik spesifik, sementara elemen interaktif membuat konsep abstrak menjadi lebih konkret dan mudah dicerna. -->
-    <!-- Visualization & Content Choices: 0. Instalasi: Teks dan link. 1. Pengenalan: Teks. 2. Konsep 'Three Trees' (Working Dir, Staging, Repo): Div HTML + JS untuk visualisasi perpindahan file. Branching & Merging: Chart.js (scatter plot). 3. Alur Kerja Dasar: Terminal simulator (HTML/CSS/JS). 4. Kolaborasi (Fetch vs Pull, Conflicts): Diagram perbandingan dan simulasi teks konflik. 5. Tips & Kesalahan Umum: Daftar teks. 6. Perintah Bermanfaat: Akordion teks. Semua pilihan mendukung struktur aplikasi yang berpusat pada pengalaman belajar interaktif. -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang sebagai SPA (Single-Page Application) dengan navigasi dropdown di mobile dan sidebar di desktop. Struktur ini mengelompokkan konten secara tematis: 0. Instalasi, 1. Pengenalan, 2. Konsep Inti, 3. Alur Kerja Praktis, 4. Kolaborasi Tim, 5. Tips & Kesalahan Umum, dan 6. Perintah Bermanfaat. Ini memfasilitasi pembelajaran bertahap dengan elemen interaktif. -->
+    <!-- Visualization & Content Choices: 0. Instalasi: Teks, link, contoh perintah. 1. Pengenalan: Teks. 2. Konsep 'Three Trees', Branching & Merging: Visualisasi interaktif HTML/JS & Chart.js. 3. Alur Kerja Dasar: Terminal simulator. 4. Kolaborasi: Diagram, contoh perintah & output. 5. Tips & Kesalahan: Daftar teks. 6. Perintah Bermanfaat: Akordion dengan contoh perintah. Semua mendukung pembelajaran interaktif. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -41,16 +41,16 @@
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-            height: 300px; /* Adjusted for smaller screens */
-            max-height: 350px; /* Adjusted for smaller screens */
+            height: 300px; 
+            max-height: 350px; 
         }
-        @media (min-width: 640px) { /* sm breakpoint */
+        @media (min-width: 640px) { 
             .chart-container {
                 height: 350px;
                 max-height: 400px;
             }
         }
-        @media (min-width: 768px) { /* md breakpoint */
+        @media (min-width: 768px) { 
             .chart-container {
                 height: 400px;
             }
@@ -64,7 +64,7 @@
             font-size: 0.875rem;
             line-height: 1.5;
             min-height: 200px;
-            overflow-x: auto; /* Ensure terminal content can scroll horizontally if needed */
+            overflow-x: auto; 
         }
         .terminal-output div {
             white-space: pre-wrap;
@@ -83,23 +83,54 @@
             background-color: rgba(34, 197, 94, 0.1);
             color: #15803d;
         }
+        .command-example {
+            background-color: #e5e7eb; /* bg-gray-200 */
+            padding: 0.5rem 0.75rem; /* p-2 p-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem; /* text-sm */
+            color: #1f2937; /* text-gray-800 */
+            margin-top: 0.5rem; /* mt-2 */
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .command-output {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8em;
+            color: #374151; /* text-gray-700 */
+            margin-top: 0.25rem; /* mt-1 */
+            border-left: 3px solid #d1d5db; /* border-l-4 border-gray-300 */
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body class="antialiased">
 
     <div class="flex flex-col md:flex-row min-h-screen">
         <!-- Navigation -->
-        <nav class="bg-white/80 backdrop-blur-sm border-b md:border-r border-stone-200 p-3 md:p-6 sticky top-0 z-20 md:w-64 md:h-screen md:overflow-y-auto">
-            <div class="flex flex-col">
-                <h1 class="text-xl md:text-2xl font-bold text-amber-600 mb-2 md:mb-4 text-center md:text-left">Belajar Git</h1>
-                <ul class="flex flex-row flex-wrap justify-center items-center gap-x-2 gap-y-1 md:flex-col md:space-y-1 md:gap-0 md:items-stretch">
-                    <li><a href="#instalasi" class="nav-link block text-xs sm:text-sm p-2 md:text-base md:p-3 rounded-lg text-stone-700 font-medium text-center md:text-left">🛠️ Instalasi</a></li>
-                    <li><a href="#pengenalan" class="nav-link block text-xs sm:text-sm p-2 md:text-base md:p-3 rounded-lg text-stone-700 font-medium text-center md:text-left">🚀 Intro</a></li>
-                    <li><a href="#konsep" class="nav-link block text-xs sm:text-sm p-2 md:text-base md:p-3 rounded-lg text-stone-700 font-medium text-center md:text-left">💡 Konsep</a></li>
-                    <li><a href="#alur-kerja" class="nav-link block text-xs sm:text-sm p-2 md:text-base md:p-3 rounded-lg text-stone-700 font-medium text-center md:text-left">⚙️ Alur Kerja</a></li>
-                    <li><a href="#kolaborasi" class="nav-link block text-xs sm:text-sm p-2 md:text-base md:p-3 rounded-lg text-stone-700 font-medium text-center md:text-left">🤝 Kolaborasi</a></li>
-                    <li><a href="#tips-kesalahan" class="nav-link block text-xs sm:text-sm p-2 md:text-base md:p-3 rounded-lg text-stone-700 font-medium text-center md:text-left">💡 Tips</a></li>
-                    <li><a href="#perintah-lain" class="nav-link block text-xs sm:text-sm p-2 md:text-base md:p-3 rounded-lg text-stone-700 font-medium text-center md:text-left">📚 Perintah</a></li>
+        <nav class="bg-white/80 backdrop-blur-sm border-b md:border-r border-stone-200 md:p-6 sticky top-0 z-20 md:w-64 md:h-screen md:overflow-y-auto">
+            <div class="flex flex-col md:h-full">
+                <div class="flex justify-between items-center p-3 md:p-0">
+                    <h1 class="text-xl md:text-2xl font-bold text-amber-600 md:mb-4 text-center md:text-left">Belajar Git</h1>
+                    <button id="menu-toggle" class="md:hidden p-2 rounded-md text-stone-700 hover:bg-stone-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-amber-500">
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+                <ul id="nav-menu" class="hidden md:flex md:flex-col md:space-y-1 md:gap-0 md:items-stretch mt-2 md:mt-0 flex-grow">
+                    <li><a href="#instalasi" class="nav-link block text-sm p-3 rounded-lg text-stone-700 font-medium text-left">🛠️ Instalasi</a></li>
+                    <li><a href="#pengenalan" class="nav-link block text-sm p-3 rounded-lg text-stone-700 font-medium text-left">🚀 Intro</a></li>
+                    <li><a href="#konsep" class="nav-link block text-sm p-3 rounded-lg text-stone-700 font-medium text-left">💡 Konsep</a></li>
+                    <li><a href="#alur-kerja" class="nav-link block text-sm p-3 rounded-lg text-stone-700 font-medium text-left">⚙️ Alur Kerja</a></li>
+                    <li><a href="#kolaborasi" class="nav-link block text-sm p-3 rounded-lg text-stone-700 font-medium text-left">🤝 Kolaborasi</a></li>
+                    <li><a href="#tips-kesalahan" class="nav-link block text-sm p-3 rounded-lg text-stone-700 font-medium text-left">💡 Tips</a></li>
+                    <li><a href="#perintah-lain" class="nav-link block text-sm p-3 rounded-lg text-stone-700 font-medium text-left">📚 Perintah</a></li>
                 </ul>
             </div>
         </nav>
@@ -128,18 +159,18 @@
                             </ul>
                         </li>
                     </ol>
-                    <p class="text-sm sm:text-base text-stone-700 leading-relaxed">Setelah instalasi, buka Command Prompt atau PowerShell dan ketik <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">git --version</code> untuk memverifikasi.</p>
+                    <p class="text-sm sm:text-base text-stone-700 leading-relaxed">Setelah instalasi, buka Command Prompt atau PowerShell dan ketik <code class="command-example inline-block">git --version</code> untuk memverifikasi.</p>
                 </article>
 
                 <article class="bg-white p-4 sm:p-6 rounded-xl shadow-sm">
                     <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-amber-700 mb-3">Instalasi di macOS</h3>
                      <p class="text-sm sm:text-base text-stone-700 leading-relaxed mb-2">Ada beberapa cara untuk menginstal Git di macOS:</p>
                     <ol class="list-decimal list-inside space-y-1 text-sm sm:text-base text-stone-700 mb-4">
-                        <li><strong>Homebrew (Direkomendasikan):</strong> Jika Anda memiliki Homebrew, buka Terminal dan jalankan: <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">brew install git</code>.</li>
-                        <li><strong>Xcode Command Line Tools:</strong> Coba jalankan <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">git --version</code> di Terminal. Jika belum ada, sistem mungkin akan menawarkan untuk menginstalnya.</li>
+                        <li><strong>Homebrew (Direkomendasikan):</strong> Jika Anda memiliki Homebrew, buka Terminal dan jalankan: <code class="command-example inline-block">brew install git</code>.</li>
+                        <li><strong>Xcode Command Line Tools:</strong> Coba jalankan <code class="command-example inline-block">git --version</code> di Terminal. Jika belum ada, sistem mungkin akan menawarkan untuk menginstalnya.</li>
                         <li><strong>Installer Resmi:</strong> Unduh installer dari <a href="https://git-scm.com/download/mac" target="_blank" class="text-amber-600 hover:underline">git-scm.com/download/mac</a>.</li>
                     </ol>
-                    <p class="text-sm sm:text-base text-stone-700 leading-relaxed">Setelah instalasi, buka Terminal dan ketik <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">git --version</code> untuk memverifikasi.</p>
+                    <p class="text-sm sm:text-base text-stone-700 leading-relaxed">Setelah instalasi, buka Terminal dan ketik <code class="command-example inline-block">git --version</code> untuk memverifikasi.</p>
                 </article>
 
                 <article class="bg-white p-4 sm:p-6 rounded-xl shadow-sm">
@@ -149,25 +180,25 @@
                         <li><strong>Distro berbasis Debian/Ubuntu:</strong>
                             <ol class="list-decimal list-inside ml-4 mt-1 text-sm sm:text-base">
                                 <li>Buka Terminal.</li>
-                                <li>Jalankan: <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">sudo apt update</code></li>
-                                <li>Kemudian: <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">sudo apt install git</code></li>
+                                <li>Jalankan: <code class="command-example inline-block">sudo apt update</code></li>
+                                <li>Kemudian: <code class="command-example inline-block">sudo apt install git</code></li>
                             </ol>
                         </li>
                         <li><strong>Distro berbasis Fedora:</strong>
                              <ol class="list-decimal list-inside ml-4 mt-1 text-sm sm:text-base">
                                 <li>Buka Terminal.</li>
-                                <li>Jalankan: <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">sudo dnf install git</code></li>
+                                <li>Jalankan: <code class="command-example inline-block">sudo dnf install git</code></li>
                             </ol>
                         </li>
                     </ul>
-                    <p class="text-sm sm:text-base text-stone-700 leading-relaxed">Setelah instalasi, buka Terminal dan ketik <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">git --version</code> untuk memverifikasi.</p>
+                    <p class="text-sm sm:text-base text-stone-700 leading-relaxed">Setelah instalasi, buka Terminal dan ketik <code class="command-example inline-block">git --version</code> untuk memverifikasi.</p>
                 </article>
                  <article class="bg-white p-4 sm:p-6 rounded-xl shadow-sm">
                     <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-amber-700 mb-3">Konfigurasi Awal Setelah Instalasi</h3>
                     <p class="text-sm sm:text-base text-stone-700 leading-relaxed mb-2">Setelah Git terinstal, penting untuk memberitahu Git siapa Anda. Buka Terminal atau Command Prompt dan jalankan:</p>
-                    <pre class="bg-stone-100 p-3 rounded-md text-xs sm:text-sm overflow-x-auto"><code>git config --global user.name "Nama Anda"
-git config --global user.email "emailanda@example.com"</code></pre>
-                    <p class="text-sm sm:text-base text-stone-700 leading-relaxed mt-2">Cek konfigurasi: <code class="bg-stone-100 p-1 rounded text-xs sm:text-sm">git config --list</code>.</p>
+                    <code class="command-example">git config --global user.name "Nama Anda"
+git config --global user.email "emailanda@example.com"</code>
+                    <p class="text-sm sm:text-base text-stone-700 leading-relaxed mt-2">Cek konfigurasi: <code class="command-example inline-block">git config --list</code>.</p>
                 </article>
             </section>
 
@@ -299,22 +330,30 @@ git config --global user.email "emailanda@example.com"</code></pre>
 
                 <article class="bg-white p-4 sm:p-6 rounded-xl shadow-sm">
                     <h3 class="text-lg sm:text-xl md:text-2xl font-semibold text-amber-700 mb-3">Interaksi dengan Repositori Online (Remote)</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="border border-stone-200 p-3 sm:p-4 rounded-lg">
-                            <h4 class="font-bold text-sm sm:text-base">git clone</h4>
-                            <p class="text-xs sm:text-sm text-stone-600">Salin repo online ke lokal.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-base sm:text-lg">git clone</h4>
+                            <p class="text-xs sm:text-sm text-stone-600 mb-1">Menyalin repo online ke komputer lokal Anda untuk pertama kali.</p>
+                            <code class="command-example">git clone https://github.com/namauser/nama-repo.git</code>
+                            <p class="command-output text-xs sm:text-sm">Contoh output: Cloning into 'nama-repo'...</p>
                         </div>
-                        <div class="border border-stone-200 p-3 sm:p-4 rounded-lg">
-                            <h4 class="font-bold text-sm sm:text-base">git push</h4>
-                            <p class="text-xs sm:text-sm text-stone-600">Kirim commit lokal ke online.</p>
+                        <div>
+                            <h4 class="font-semibold text-base sm:text-lg">git push</h4>
+                            <p class="text-xs sm:text-sm text-stone-600 mb-1">Mengirim *commit* dari lokal ke repositori online.</p>
+                            <code class="command-example">git push origin nama-branch-anda</code>
+                            <p class="command-output text-xs sm:text-sm">Contoh output: Everything up-to-date <br>atau: To https://github.com/namauser/nama-repo.git<br>&nbsp;&nbsp;* [new branch]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nama-branch-anda -> nama-branch-anda</p>
                         </div>
-                        <div class="border border-stone-200 p-3 sm:p-4 rounded-lg">
-                            <h4 class="font-bold text-sm sm:text-base">git pull</h4>
-                            <p class="text-xs sm:text-sm text-stone-600">Ambil & gabung update online.</p>
+                        <div>
+                            <h4 class="font-semibold text-base sm:text-lg">git pull</h4>
+                            <p class="text-xs sm:text-sm text-stone-600 mb-1">Mengambil & menggabungkan perubahan terbaru dari online ke lokal.</p>
+                            <code class="command-example">git pull origin main</code>
+                            <p class="command-output text-xs sm:text-sm">Contoh output: From https://github.com/namauser/nama-repo<br>&nbsp;* branch&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;main&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> FETCH_HEAD<br>Updating a1b2c3d..e4f5g6h<br>Fast-forward...</p>
                         </div>
-                        <div class="border border-stone-200 p-3 sm:p-4 rounded-lg">
-                            <h4 class="font-bold text-sm sm:text-base">git fetch</h4>
-                            <p class="text-xs sm:text-sm text-stone-600">Ambil update, belum gabung.</p>
+                        <div>
+                            <h4 class="font-semibold text-base sm:text-lg">git fetch</h4>
+                            <p class="text-xs sm:text-sm text-stone-600 mb-1">Mengambil perubahan terbaru dari online, tapi belum digabungkan.</p>
+                            <code class="command-example">git fetch origin</code>
+                            <p class="command-output text-xs sm:text-sm">Contoh output: From https://github.com/namauser/nama-repo<br>&nbsp;* [new branch]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fitur-baru&nbsp;&nbsp;-> origin/fitur-baru<br>&nbsp;&nbsp;&nbsp;a1b2c3d..e4f5g6h&nbsp;&nbsp;main&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> origin/main</p>
                         </div>
                     </div>
                 </article>
@@ -326,12 +365,12 @@ git config --global user.email "emailanda@example.com"</code></pre>
                         <div class="bg-stone-50 p-3 sm:p-4 rounded-lg">
                             <h4 class="font-bold text-base sm:text-lg">`git fetch`</h4>
                             <p class="text-xs sm:text-sm text-stone-600">Unduh "kabar terbaru", tinjau dulu sebelum merge manual.</p>
-                            <div class="mt-2 font-mono text-xs sm:text-sm bg-stone-200 p-2 rounded">git fetch + git merge</div>
+                            <code class="command-example mt-2">git fetch origin<br>git merge origin/main</code>
                         </div>
                         <div class="bg-stone-50 p-3 sm:p-4 rounded-lg">
                             <h4 class="font-bold text-base sm:text-lg">`git pull`</h4>
                             <p class="text-xs sm:text-sm text-stone-600">Langsung unduh DAN gabungkan. Praktis, kurang fleksibel.</p>
-                            <div class="mt-2 font-mono text-xs sm:text-sm bg-stone-200 p-2 rounded">git pull</div>
+                            <code class="command-example mt-2">git pull origin main</code>
                         </div>
                     </div>
                 </article>
@@ -348,7 +387,9 @@ git config --global user.email "emailanda@example.com"</code></pre>
 <span class="conflict-marker-new">&gt;&gt;&gt;&gt;&gt;&gt;&gt; fitur/tombol-baru</span>
 &lt;footer&gt;Hak Cipta 2024&lt;/footer&gt;</code></pre>
                     </div>
-                    <p class="mt-4 text-sm sm:text-base text-stone-700">Edit file, hapus penanda, pilih kode benar, lalu `git add` & `git commit`.</p>
+                    <p class="mt-4 text-sm sm:text-base text-stone-700">Edit file, hapus penanda, pilih kode benar, lalu:</p>
+                    <code class="command-example">git add nama-file-konflik.js<br>git commit</code>
+                    <p class="command-output text-xs sm:text-sm">Contoh output setelah commit: [main a1b2c3d] Merge branch 'fitur/tombol-baru'</p>
                 </article>
             </section>
 
@@ -399,7 +440,16 @@ git config --global user.email "emailanda@example.com"</code></pre>
                             <span class="text-xl">▼</span>
                         </button>
                         <div class="accordion-content hidden p-3 sm:p-4 pt-0 text-sm sm:text-base text-stone-600">
-                            <p>Membatalkan commit/perubahan di Staging. Hati-hati, bisa ubah riwayat. Mode: `--soft`, `--mixed`, `--hard`.</p>
+                            <p>Membatalkan commit/perubahan di Staging. Hati-hati, bisa ubah riwayat.</p>
+                            <p class="mt-2 font-semibold text-xs sm:text-sm">Contoh Penggunaan:</p>
+                            <code class="command-example"># Membatalkan commit terakhir, perubahan kembali ke staging area
+git reset --soft HEAD~1
+
+# Membatalkan commit terakhir & perubahan di staging area, perubahan tetap di working directory
+git reset HEAD~1 
+
+# Membatalkan commit terakhir & semua perubahan (hati-hati!)
+git reset --hard HEAD~1</code>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm">
@@ -409,6 +459,12 @@ git config --global user.email "emailanda@example.com"</code></pre>
                         </button>
                         <div class="accordion-content hidden p-3 sm:p-4 pt-0 text-sm sm:text-base text-stone-600">
                             <p>Cara aman batal commit. Buat commit baru kebalikan dari commit target. Riwayat utuh.</p>
+                            <p class="mt-2 font-semibold text-xs sm:text-sm">Contoh Penggunaan:</p>
+                            <code class="command-example"># Membuat commit baru yang membatalkan perubahan dari commit terakhir
+git revert HEAD
+
+# Membatalkan commit tertentu (ganti id-commit dengan ID commit target)
+git revert id-commit</code>
                         </div>
                     </div>
                      <div class="bg-white rounded-xl shadow-sm">
@@ -418,6 +474,20 @@ git config --global user.email "emailanda@example.com"</code></pre>
                         </button>
                         <div class="accordion-content hidden p-3 sm:p-4 pt-0 text-sm sm:text-base text-stone-600">
                             <p>File khusus untuk daftar file/folder yang diabaikan Git (misal: log, `node_modules`).</p>
+                            <p class="mt-2 font-semibold text-xs sm:text-sm">Contoh Isi File <code>.gitignore</code>:</p>
+                            <pre class="command-example"><code># Abaikan folder node_modules
+node_modules/
+
+# Abaikan semua file .log
+*.log
+
+# Abaikan file konfigurasi lokal
+.env
+config.local.json
+
+# Abaikan file sistem operasi
+.DS_Store
+Thumbs.db</code></pre>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm">
@@ -427,6 +497,9 @@ git config --global user.email "emailanda@example.com"</code></pre>
                         </button>
                         <div class="accordion-content hidden p-3 sm:p-4 pt-0 text-sm sm:text-base text-stone-600">
                             <p>Lihat penulis terakhir tiap baris file & ID commit-nya. Berguna untuk melacak perubahan.</p>
+                             <p class="mt-2 font-semibold text-xs sm:text-sm">Contoh Penggunaan:</p>
+                            <code class="command-example">git blame namafile.js</code>
+                            <p class="command-output text-xs sm:text-sm">Contoh output (per baris):<br> a1b2c3d (Nama Penulis 2023-01-15 10:30:00 +0700 1) baris kode...</p>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm">
@@ -436,11 +509,13 @@ git config --global user.email "emailanda@example.com"</code></pre>
                         </button>
                         <div class="accordion-content hidden p-3 sm:p-4 pt-0 text-sm sm:text-base text-stone-600">
                             <p>Lihat perbedaan antar keadaan repositori (working dir, staging, commit, branch).</p>
-                            <ul class="list-disc list-inside space-y-1 mt-2 text-xs sm:text-sm">
-                                <li><code>git diff</code>: Working dir vs Staging.</li>
-                                <li><code>git diff --staged</code>: Staging vs Commit terakhir.</li>
-                                <li><code>git diff &lt;commit1&gt; &lt;commit2&gt;</code>: Antar dua commit.</li>
-                                <li><code>git diff &lt;branch1&gt;..&lt;branch2&gt;</code>: Antar dua branch.</li>
+                            <p class="mt-2 font-semibold text-xs sm:text-sm">Contoh Penggunaan:</p>
+                            <ul class="list-none space-y-1 mt-2 text-xs sm:text-sm">
+                                <li><code class="command-example inline-block">git diff</code>: Working dir vs Staging.</li>
+                                <li><code class="command-example inline-block">git diff --staged</code>: Staging vs Commit terakhir.</li>
+                                <li><code class="command-example inline-block">git diff HEAD</code>: Working dir vs Commit terakhir.</li>
+                                <li><code class="command-example inline-block">git diff commit1-id commit2-id</code>: Antar dua commit.</li>
+                                <li><code class="command-example inline-block">git diff branch-lama..branch-baru</code>: Antar dua branch.</li>
                             </ul>
                         </div>
                     </div>
@@ -456,6 +531,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.content-section');
     const accordionHeaders = document.querySelectorAll('.accordion-header');
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
 
     const setActiveLink = (hash) => {
         navLinks.forEach(link => {
@@ -477,35 +554,68 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const handleNavigation = () => {
+    const handleNavigation = (isInitialLoad = false) => {
         const hash = window.location.hash || (navLinks.length > 0 ? navLinks[0].getAttribute('href') : '#instalasi');
         setActiveLink(hash);
         showSection(hash);
-        // Scroll to top of section on mobile, or to top of page if nav is sticky
-        const targetSection = document.querySelector(hash);
-        if (targetSection) {
-             // Simple scroll to top of page, as nav might be sticky
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        if (!isInitialLoad && window.innerWidth < 768) { // md breakpoint
+            navMenu.classList.add('hidden'); // Close menu on mobile after navigation
+            // Update hamburger icon if needed
+            menuToggle.innerHTML = `<svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>`;
         }
 
+        if (!isInitialLoad) {
+            const targetSection = document.querySelector(hash);
+            if (targetSection) {
+                // Scroll to the top of the main content area or section for better visibility
+                const mainContent = document.querySelector('main');
+                if (mainContent) {
+                    // Get the top position of the target section relative to the viewport
+                    const sectionTop = targetSection.getBoundingClientRect().top;
+                    // Get the current scroll position
+                    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                    // Calculate the target scroll position
+                    const targetScroll = currentScroll + sectionTop - (document.querySelector('nav').offsetHeight + 20); // Adjust 20 for some margin
+
+                    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+                } else {
+                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        } else if (hash === (navLinks.length > 0 ? navLinks[0].getAttribute('href') : '#instalasi')) {
+            // For initial load on the first section, no need to scroll aggressively
+             window.scrollTo({ top: 0, behavior: 'auto' });
+        }
     };
 
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const hash = e.currentTarget.getAttribute('href');
-            // Update hash without jumping, then handle navigation which includes scroll
             if (window.location.hash !== hash) {
-                window.location.hash = hash;
+                window.location.hash = hash; // This will trigger hashchange
             } else {
-                // If hash is already correct, just ensure section is shown and scrolled
-                handleNavigation();
+                handleNavigation(); // Manually trigger if hash is the same
             }
         });
     });
     
-    window.addEventListener('hashchange', handleNavigation);
-    handleNavigation(); // Initial load
+    window.addEventListener('hashchange', () => handleNavigation());
+    handleNavigation(true); // Initial load
+
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('hidden');
+            // Optional: Change hamburger to X icon
+            if (navMenu.classList.contains('hidden')) {
+                menuToggle.innerHTML = `<svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>`;
+            } else {
+                menuToggle.innerHTML = `<svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>`;
+            }
+        });
+    }
+
 
     // Accordion Logic
     accordionHeaders.forEach(header => {
@@ -587,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if(btnResetFlow) btnResetFlow.addEventListener('click', resetFlow);
     
-    if (document.getElementById('konsep')) resetFlow(); 
+    if (document.getElementById('konsep') && workingDirEl) resetFlow(); 
 
     // Branching Chart Logic
     const canvasCtx = document.getElementById('branchingChart');
@@ -604,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 data: [{ x: 0, y: 0, c: 'C0' }], 
                 borderColor: 'rgb(59, 130, 246)',
                 backgroundColor: 'rgb(59, 130, 246)',
-                pointRadius: 6, // smaller points for mobile
+                pointRadius: 6, 
                 pointHoverRadius: 8,
                 showLine: true,
                 tension: 0, 
@@ -630,7 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         y: { display: false, min: -1.5, max: 1.5 }
                     },
                     plugins: {
-                        legend: { position: 'top', labels: { font: { size: 10 } } }, // smaller legend
+                        legend: { position: 'top', labels: { font: { size: 10 } } }, 
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -721,7 +831,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnResetChart = document.getElementById('btnResetChart');
         if(btnResetChart) btnResetChart.addEventListener('click', resetChart);
 
-        if (document.getElementById('konsep')) resetChart(); 
+        if (document.getElementById('konsep') && canvasCtx) resetChart(); 
     }
 
 
