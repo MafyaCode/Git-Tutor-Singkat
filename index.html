@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Interaktif Belajar Git</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang sebagai SPA (Single-Page Application) dengan navigasi vertikal di sisi kiri (desktop) atau header (mobile) untuk memandu pengguna melalui alur belajar yang logis. Struktur ini tidak mengikuti urutan slide PPT secara kaku, melainkan mengelompokkan konten secara tematis untuk pemahaman yang lebih baik: 1. Pengenalan (konsep dasar), 2. Visualisasi Konsep Inti (interaktif), 3. Alur Kerja Praktis (simulator), dan 4. Kolaborasi Tim (visualisasi). Pendekatan ini dipilih agar pengguna dapat belajar secara bertahap atau langsung melompat ke topik spesifik, sementara elemen interaktif membuat konsep abstrak menjadi lebih konkret dan mudah dicerna. -->
+    <!-- Visualization & Content Choices: 1. Konsep 'Three Trees' (Working Dir, Staging, Repo): Div HTML + JS untuk visualisasi perpindahan file, lebih konkret dari diagram statis. 2. Branching & Merging: Chart.js (line chart) untuk menunjukkan pembuatan commit, cabang, dan penggabungan secara dinamis. Ini jauh lebih efektif untuk menjelaskan alur waktu dan percabangan daripada gambar. 3. Alur Kerja Dasar: Terminal simulator (HTML/CSS/JS) untuk mendemonstrasikan perintah umum tanpa risiko, memberikan pengalaman praktis yang aman. 4. Kolaborasi (Fetch vs Pull, Conflicts): Diagram perbandingan sederhana (HTML/CSS) dan simulasi teks konflik untuk demistifikasi konsep yang sering membingungkan. Semua pilihan mendukung struktur aplikasi yang berpusat pada pengalaman belajar interaktif. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #44403c;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            background-color: #f59e0b;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .nav-link:not(.active):hover {
+            background-color: #fef3c7;
+            color: #44403c;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .terminal {
+            background-color: #2d3748;
+            color: #f7fafc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            min-height: 200px;
+        }
+        .terminal-output div {
+            white-space: pre-wrap;
+        }
+        .terminal-prompt {
+            color: #a0aec0;
+        }
+        .terminal-command {
+            color: #f7fafc;
+        }
+        .conflict-marker {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #b91c1c;
+        }
+        .conflict-marker-new {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #15803d;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Navigation -->
+        <nav class="md:w-64 bg-white/80 backdrop-blur-sm border-b md:border-b-0 md:border-r border-stone-200 p-4 md:p-6 sticky top-0 md:h-screen z-20">
+            <h1 class="text-2xl font-bold text-amber-600 mb-6">Belajar Git</h1>
+            <ul class="space-y-2">
+                <li><a href="#pengenalan" class="nav-link block p-3 rounded-lg text-stone-700 font-medium">🚀 Pengenalan</a></li>
+                <li><a href="#konsep" class="nav-link block p-3 rounded-lg text-stone-700 font-medium">💡 Konsep Inti</a></li>
+                <li><a href="#alur-kerja" class="nav-link block p-3 rounded-lg text-stone-700 font-medium">⚙️ Alur Kerja Praktis</a></li>
+                <li><a href="#kolaborasi" class="nav-link block p-3 rounded-lg text-stone-700 font-medium">🤝 Kolaborasi Tim</a></li>
+                <li><a href="#perintah-lain" class="nav-link block p-3 rounded-lg text-stone-700 font-medium">📚 Perintah Bermanfaat</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10">
+            
+            <!-- Section 1: Pengenalan -->
+            <section id="pengenalan" class="content-section space-y-8">
+                <header>
+                    <h2 class="text-4xl font-bold text-stone-800 mb-2">Kenalan Sama Git, Yuk!</h2>
+                    <p class="text-lg text-stone-600">Bagian ini akan memperkenalkan Anda pada konsep dasar Git dan mengapa ia menjadi alat yang sangat penting bagi para pengembang. Kita akan membahas apa itu Git, manfaat utamanya, dan perbedaannya dengan GitHub.</p>
+                </header>
+                
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-3">Apa Itu Git & Version Control?</h3>
+                    <p class="text-stone-700 leading-relaxed">Secara sederhana, Git adalah **sistem pencatat super canggih** untuk setiap perubahan yang terjadi pada file-file proyek Anda. Secara formal, Git adalah sebuah *Version Control System* (VCS) atau Sistem Kontrol Versi. Tugas utamanya adalah merekam perubahan pada satu atau sekumpulan file dari waktu ke waktu, sehingga Anda bisa kembali ke versi tertentu kapan pun dibutuhkan. Ini seperti memiliki "mesin waktu" untuk proyek Anda, memungkinkan Anda bereksperimen tanpa takut merusak pekerjaan yang sudah ada.</p>
+                </article>
+
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-3">Manfaat Utama Menggunakan Git</h3>
+                    <ul class="list-disc list-inside space-y-2 text-stone-700">
+                        <li><strong>Organisasi Proyek Rapi:</strong> Tidak ada lagi file bernama `proyek_final_revisi3.zip`.</li>
+                        <li><strong>Kolaborasi Tim Mudah:</strong> Bekerja bersama dalam satu proyek tanpa saling menimpa pekerjaan.</li>
+                        <li><strong>Jaring Pengaman:</strong> Setiap *commit* adalah titik aman yang bisa Anda pulihkan.</li>
+                        <li><strong>Jejak Perubahan Jelas:</strong> Lihat siapa, kapan, dan mengapa sebuah perubahan dibuat.</li>
+                        <li><strong>Eksperimen Aman:</strong> Coba ide baru di "cabang" terpisah tanpa mengganggu kode utama.</li>
+                    </ul>
+                </article>
+
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-3">Git vs. GitHub: Jangan Tertukar!</h3>
+                    <p class="text-stone-700 mb-4">Ini adalah kebingungan umum bagi pemula. Mari kita luruskan dengan analogi:</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg text-stone-800">Git adalah...</h4>
+                            <p class="text-stone-600">...seperti aplikasi Microsoft Word di komputer Anda. Ini adalah **perangkat lunak** yang Anda instal untuk melacak perubahan file secara lokal (di komputer sendiri).</p>
+                        </div>
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg text-stone-800">GitHub adalah...</h4>
+                            <p class="text-stone-600">...seperti layanan Google Docs. Ini adalah **platform online (hosting)** untuk menyimpan repositori Git Anda, membagikannya, dan berkolaborasi dengan orang lain.</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- Section 2: Konsep Inti -->
+            <section id="konsep" class="content-section space-y-8">
+                <header>
+                    <h2 class="text-4xl font-bold text-stone-800 mb-2">Memahami Konsep Inti Git</h2>
+                    <p class="text-lg text-stone-600">Untuk benar-benar menguasai Git, Anda perlu memahami beberapa konsep fundamentalnya. Di bagian ini, kita akan memvisualisasikan "Tiga Pohon" Git yang terkenal (Working Directory, Staging Area, dan Repository) serta konsep kuat dari Branching (percabangan).</p>
+                </header>
+                
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-4">Visualisasi Tiga Area Git</h3>
+                    <p class="text-stone-700 mb-6">Git memiliki tiga "area" utama tempat file Anda berada. Interaksi di bawah ini akan membantu Anda memahami alur kerja dasarnya. Coba klik tombol-tombol di bawah untuk melihat bagaimana file berpindah antar area.</p>
+                    <div class="grid md:grid-cols-3 gap-4 text-center">
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg">1. Working Directory</h4>
+                            <p class="text-sm text-stone-500 mb-4">Folder proyek di komputer Anda.</p>
+                            <div id="workingDir" class="bg-stone-50 p-4 rounded-md min-h-[100px] space-y-2"></div>
+                        </div>
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                             <h4 class="font-bold text-lg">2. Staging Area (Index)</h4>
+                            <p class="text-sm text-stone-500 mb-4">Area persiapan sebelum di-commit.</p>
+                            <div id="stagingArea" class="bg-blue-50 p-4 rounded-md min-h-[100px] space-y-2"></div>
+                        </div>
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg">3. Repository (.git)</h4>
+                            <p class="text-sm text-stone-500 mb-4">Riwayat perubahan yang tersimpan.</p>
+                            <div id="repository" class="bg-green-50 p-4 rounded-md min-h-[100px] space-y-2"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2 mt-6">
+                        <button id="btnCreateFile" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Buat/Ubah File</button>
+                        <button id="btnAddFile" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-400" disabled>git add</button>
+                        <button id="btnCommitFile" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-400" disabled>git commit</button>
+                        <button id="btnResetFlow" class="bg-stone-500 hover:bg-stone-600 text-white font-bold py-2 px-4 rounded-lg">Reset</button>
+                    </div>
+                </article>
+
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-4">Visualisasi Branching & Merging</h3>
+                    <p class="text-stone-700 mb-6">Branch (cabang) adalah salah satu fitur terkuat Git. Ini memungkinkan Anda untuk mengerjakan fitur baru atau memperbaiki bug di lingkungan terisolasi tanpa mengganggu kode utama. Gunakan tombol di bawah untuk melihat bagaimana cabang dibuat, dikembangkan, dan digabungkan kembali.</p>
+                    <div class="chart-container">
+                        <canvas id="branchingChart"></canvas>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2 mt-6">
+                        <button id="btnCommitMain" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg">Commit di 'main'</button>
+                        <button id="btnCreateBranch" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg">Buat Branch 'fitur'</button>
+                        <button id="btnCommitFeature" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-400" disabled>Commit di 'fitur'</button>
+                        <button id="btnMergeBranch" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-400" disabled>Merge 'fitur' ke 'main'</button>
+                        <button id="btnResetChart" class="bg-stone-500 hover:bg-stone-600 text-white font-bold py-2 px-4 rounded-lg">Reset</button>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- Section 3: Alur Kerja Praktis -->
+            <section id="alur-kerja" class="content-section space-y-8">
+                <header>
+                    <h2 class="text-4xl font-bold text-stone-800 mb-2">Alur Kerja Praktis Sehari-hari</h2>
+                    <p class="text-lg text-stone-600">Mari kita praktikkan alur kerja Git yang paling umum, dari memulai proyek hingga menyimpan perubahan. Simulator terminal di bawah ini akan menunjukkan perintah-perintah yang digunakan dan hasil yang diharapkan, memberikan Anda pengalaman praktis tanpa harus membuka terminal sungguhan.</p>
+                </header>
+
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-4">Simulator Terminal Git</h3>
+                    <p class="text-stone-700 mb-6">Klik tombol-tombol di bawah secara berurutan untuk menjalankan siklus kerja dasar Git. Perhatikan bagaimana setiap perintah mengubah status proyek di dalam terminal.</p>
+                    <div class="terminal">
+                        <div id="terminalOutput" class="terminal-output">
+                            <div>Selamat datang di Simulator Terminal Git!</div>
+                            <div>Klik tombol di bawah untuk memulai.</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2 mt-6">
+                        <button data-command="init" class="workflow-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">1. git init</button>
+                        <button data-command="status1" class="workflow-btn bg-gray-400 text-white font-bold py-2 px-4 rounded-lg" disabled>2. git status</button>
+                        <button data-command="add" class="workflow-btn bg-gray-400 text-white font-bold py-2 px-4 rounded-lg" disabled>3. git add .</button>
+                        <button data-command="status2" class="workflow-btn bg-gray-400 text-white font-bold py-2 px-4 rounded-lg" disabled>4. git status</button>
+                        <button data-command="commit" class="workflow-btn bg-gray-400 text-white font-bold py-2 px-4 rounded-lg" disabled>5. git commit</button>
+                        <button data-command="log" class="workflow-btn bg-gray-400 text-white font-bold py-2 px-4 rounded-lg" disabled>6. git log</button>
+                        <button data-command="reset" class="workflow-btn bg-stone-500 hover:bg-stone-600 text-white font-bold py-2 px-4 rounded-lg">Reset</button>
+                    </div>
+                </article>
+            </section>
+            
+            <!-- Section 4: Kolaborasi Tim -->
+            <section id="kolaborasi" class="content-section space-y-8">
+                 <header>
+                    <h2 class="text-4xl font-bold text-stone-800 mb-2">Kolaborasi dengan Tim</h2>
+                    <p class="text-lg text-stone-600">Kekuatan sejati Git terletak pada kemampuannya memfasilitasi kerja tim. Di bagian ini, kita akan menjelajahi bagaimana cara berinteraksi dengan repositori online (remote), memahami perbedaan antara `pull` dan `fetch`, serta cara menangani `merge conflict` yang kadang tak terhindarkan.</p>
+                </header>
+
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-3">Interaksi dengan Repositori Online (Remote)</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                            <h4 class="font-bold">git clone</h4>
+                            <p class="text-sm text-stone-600">Menyalin repo online ke komputer lokal Anda untuk pertama kali.</p>
+                        </div>
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                            <h4 class="font-bold">git push</h4>
+                            <p class="text-sm text-stone-600">Mengirim *commit* dari lokal ke repositori online.</p>
+                        </div>
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                            <h4 class="font-bold">git pull</h4>
+                            <p class="text-sm text-stone-600">Mengambil & menggabungkan perubahan terbaru dari online ke lokal.</p>
+                        </div>
+                        <div class="border border-stone-200 p-4 rounded-lg">
+                            <h4 class="font-bold">git fetch</h4>
+                            <p class="text-sm text-stone-600">Mengambil perubahan terbaru dari online, tapi belum digabungkan.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-4">Memahami `git pull` vs `git fetch`</h3>
+                    <p class="text-stone-700 mb-4">Meskipun mirip, keduanya punya perbedaan penting. `git pull` adalah jalan pintas yang nyaman, sementara `git fetch` memberi Anda lebih banyak kontrol.</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-stone-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg">`git fetch`</h4>
+                            <p class="text-stone-600">Hanya mengunduh "kabar terbaru" dari remote. Anda bisa meninjau perubahannya dulu sebelum memutuskan untuk menggabungkan (`merge`) secara manual.</p>
+                            <div class="mt-2 font-mono text-sm bg-stone-200 p-2 rounded">git fetch + git merge</div>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg">`git pull`</h4>
+                            <p class="text-stone-600">Langsung melakukan `fetch` (mengunduh) DAN `merge` (menggabungkan) dalam satu langkah. Praktis, tapi kurang fleksibel.</p>
+                            <div class="mt-2 font-mono text-sm bg-stone-200 p-2 rounded">git pull</div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-2xl font-semibold text-amber-700 mb-4">Menangani "Bentrok" Kode (Merge Conflict)</h3>
+                    <p class="text-stone-700 mb-4">Konflik terjadi saat Git tidak bisa otomatis menggabungkan perubahan yang tumpang tindih dari dua branch. Jangan panik! Git akan menandai area konflik di dalam file, dan tugas Anda adalah menyelesaikannya secara manual. Berikut contohnya:</p>
+                    <div class="terminal text-sm">
+                        <pre><code>&lt;p&gt;Selamat datang di halaman utama kami.&lt;/p&gt;
+<span class="conflict-marker">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+&lt;button class="btn-primary"&gt;Daftar Sekarang&lt;/button&gt;
+<span class="conflict-marker">=======</span>
+&lt;button class="btn-cta"&gt;Mulai Gratis&lt;/button&gt;
+<span class="conflict-marker-new">&gt;&gt;&gt;&gt;&gt;&gt;&gt; fitur/tombol-baru</span>
+&lt;footer&gt;Hak Cipta 2024&lt;/footer&gt;</code></pre>
+                    </div>
+                    <p class="mt-4 text-stone-700">Untuk menyelesaikannya, Anda harus mengedit file ini, menghapus penanda `<<<<<<<`, `=======`, `>>>>>>>`, dan memilih kode yang benar atau menggabungkan keduanya. Setelah itu, simpan file, lalu jalankan `git add` dan `git commit` untuk menyelesaikan proses merge.</p>
+                </article>
+            </section>
+
+            <!-- Section 5: Perintah Lain -->
+            <section id="perintah-lain" class="content-section space-y-8">
+                <header>
+                    <h2 class="text-4xl font-bold text-stone-800 mb-2">Perintah Bermanfaat Lainnya</h2>
+                    <p class="text-lg text-stone-600">Selain alur kerja utama, Git memiliki banyak perintah lain yang sangat berguna dalam berbagai situasi. Bagian ini berfungsi sebagai referensi cepat untuk beberapa perintah yang paling sering digunakan.</p>
+                </header>
+
+                <div class="space-y-4" id="command-accordion">
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <button class="accordion-header w-full text-left p-4 font-semibold text-lg text-amber-800 flex justify-between items-center">
+                            git reset
+                            <span>▼</span>
+                        </button>
+                        <div class="accordion-content hidden p-4 pt-0 text-stone-600">
+                            <p>Digunakan untuk "membatalkan" commit atau perubahan di Staging Area. Ini bisa mengubah riwayat commit, jadi gunakan dengan hati-hati. Ada beberapa mode seperti `--soft` (hanya membatalkan commit), `--mixed` (default, membatalkan commit & unstage perubahan), dan `--hard` (membatalkan commit & menghapus perubahan di working directory).</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <button class="accordion-header w-full text-left p-4 font-semibold text-lg text-amber-800 flex justify-between items-center">
+                            git revert
+                            <span>▼</span>
+                        </button>
+                        <div class="accordion-content hidden p-4 pt-0 text-stone-600">
+                            <p>Cara aman untuk membatalkan sebuah commit. Alih-alih menghapus commit dari riwayat, `revert` membuat sebuah commit baru yang isinya adalah kebalikan dari commit yang ingin dibatalkan. Ini menjaga riwayat tetap utuh dan aman untuk digunakan pada branch yang sudah dibagikan.</p>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-xl shadow-sm">
+                        <button class="accordion-header w-full text-left p-4 font-semibold text-lg text-amber-800 flex justify-between items-center">
+                            .gitignore
+                            <span>▼</span>
+                        </button>
+                        <div class="accordion-content hidden p-4 pt-0 text-stone-600">
+                            <p>Ini bukan perintah, melainkan sebuah file khusus. Anda bisa membuat file bernama `.gitignore` di root proyek Anda dan mendaftarkan nama file atau folder yang tidak ingin Anda lacak oleh Git. Contohnya file log, folder hasil kompilasi (`node_modules`), atau file konfigurasi lokal.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <button class="accordion-header w-full text-left p-4 font-semibold text-lg text-amber-800 flex justify-between items-center">
+                            git blame
+                            <span>▼</span>
+                        </button>
+                        <div class="accordion-content hidden p-4 pt-0 text-stone-600">
+                            <p>Perintah ini digunakan untuk melihat siapa penulis terakhir dari setiap baris dalam sebuah file, beserta ID commit-nya. Sangat berguna untuk melacak kapan dan oleh siapa sebuah baris kode spesifik ditambahkan atau diubah.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Navigation Logic
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.content-section');
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+    const setActiveLink = (hash) => {
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === hash) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    };
+
+    const showSection = (hash) => {
+        sections.forEach(section => {
+            if ('#' + section.id === hash) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+    };
+
+    const handleNavigation = () => {
+        const hash = window.location.hash || '#pengenalan';
+        setActiveLink(hash);
+        showSection(hash);
+    };
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const hash = e.currentTarget.getAttribute('href');
+            window.location.hash = hash;
+        });
+    });
+    
+    window.addEventListener('hashchange', handleNavigation);
+    handleNavigation(); // Initial load
+
+    // Accordion Logic
+    accordionHeaders.forEach(header => {
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('span');
+            content.classList.toggle('hidden');
+            icon.textContent = content.classList.contains('hidden') ? '▼' : '▲';
+        });
+    });
+
+    // Three Areas Visualization Logic
+    const workingDirEl = document.getElementById('workingDir');
+    const stagingAreaEl = document.getElementById('stagingArea');
+    const repositoryEl = document.getElementById('repository');
+    const btnCreateFile = document.getElementById('btnCreateFile');
+    const btnAddFile = document.getElementById('btnAddFile');
+    const btnCommitFile = document.getElementById('btnCommitFile');
+    const btnResetFlow = document.getElementById('btnResetFlow');
+
+    let fileCounter = 0;
+    let flowState = 'initial';
+
+    const createFileElement = (name) => {
+        const fileDiv = document.createElement('div');
+        fileDiv.textContent = name;
+        fileDiv.className = 'bg-white p-2 rounded shadow-sm text-sm';
+        fileDiv.id = `file-${fileCounter}`;
+        fileCounter++;
+        return fileDiv;
+    };
+
+    const resetFlow = () => {
+        workingDirEl.innerHTML = '';
+        stagingAreaEl.innerHTML = '';
+        repositoryEl.innerHTML = '';
+        fileCounter = 0;
+        flowState = 'initial';
+        btnAddFile.disabled = true;
+        btnCommitFile.disabled = true;
+    };
+
+    btnCreateFile.addEventListener('click', () => {
+        if (flowState === 'initial') {
+            const newFile = createFileElement('index.html');
+            workingDirEl.appendChild(newFile);
+            btnAddFile.disabled = false;
+            flowState = 'untracked';
+        }
+    });
+
+    btnAddFile.addEventListener('click', () => {
+        if (flowState === 'untracked' && workingDirEl.children.length > 0) {
+            const fileToStage = workingDirEl.querySelector('div');
+            stagingAreaEl.appendChild(fileToStage);
+            btnCommitFile.disabled = false;
+            btnAddFile.disabled = true;
+            flowState = 'staged';
+        }
+    });
+
+    btnCommitFile.addEventListener('click', () => {
+        if (flowState === 'staged' && stagingAreaEl.children.length > 0) {
+            const fileToCommit = stagingAreaEl.querySelector('div');
+            const commitDiv = document.createElement('div');
+            commitDiv.className = 'bg-white p-2 rounded shadow-sm text-sm';
+            commitDiv.innerHTML = `<span class="font-bold text-green-700">Commit a1b2c3d:</span><br>Menambah ${fileToCommit.textContent}`;
+            repositoryEl.appendChild(commitDiv);
+            flowState = 'committed';
+            btnCommitFile.disabled = true;
+        }
+    });
+
+    btnResetFlow.addEventListener('click', resetFlow);
+    
+    resetFlow(); // Initialize on load
+
+    // Branching Chart Logic
+    const ctx = document.getElementById('branchingChart').getContext('2d');
+    let branchingChart;
+    let chartData;
+    let commitCounter;
+    let featureBranchExists;
+
+    const initialChartState = () => ({
+        datasets: [{
+            label: 'main',
+            data: [{ x: 0, y: 0, c: 'C0' }],
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgb(59, 130, 246)',
+            pointRadius: 8,
+            pointHoverRadius: 10,
+            showLine: true,
+            tension: 0,
+            pointStyle: 'circle'
+        }]
+    });
+
+    const resetChart = () => {
+        commitCounter = 1;
+        featureBranchExists = false;
+        chartData = initialChartState();
+        if (branchingChart) {
+            branchingChart.destroy();
+        }
+        branchingChart = new Chart(ctx, {
+            type: 'scatter',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: false,
+                        min: -0.5,
+                    },
+                    y: {
+                        display: false,
+                        min: -1.5,
+                        max: 1.5
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Commit ${context.raw.c} on ${context.dataset.label}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        document.getElementById('btnCreateBranch').disabled = false;
+        document.getElementById('btnCommitFeature').disabled = true;
+        document.getElementById('btnMergeBranch').disabled = true;
+    };
+    
+    document.getElementById('btnCommitMain').addEventListener('click', () => {
+        const mainDataset = chartData.datasets.find(ds => ds.label === 'main');
+        const lastCommit = mainDataset.data[mainDataset.data.length - 1];
+        mainDataset.data.push({ x: lastCommit.x + 1, y: 0, c: `C${commitCounter++}` });
+        branchingChart.update();
+    });
+
+    document.getElementById('btnCreateBranch').addEventListener('click', () => {
+        if (!featureBranchExists) {
+            const mainDataset = chartData.datasets.find(ds => ds.label === 'main');
+            const lastCommit = mainDataset.data[mainDataset.data.length - 1];
+            chartData.datasets.push({
+                label: 'fitur',
+                data: [{ ...lastCommit, c: lastCommit.c }],
+                borderColor: 'rgb(168, 85, 247)',
+                backgroundColor: 'rgb(168, 85, 247)',
+                pointRadius: 8,
+                pointHoverRadius: 10,
+                showLine: true,
+                tension: 0,
+                pointStyle: 'rect'
+            });
+            branchingChart.update();
+            featureBranchExists = true;
+            document.getElementById('btnCreateBranch').disabled = true;
+            document.getElementById('btnCommitFeature').disabled = false;
+            document.getElementById('btnMergeBranch').disabled = false;
+        }
+    });
+
+    document.getElementById('btnCommitFeature').addEventListener('click', () => {
+        const featureDataset = chartData.datasets.find(ds => ds.label === 'fitur');
+        const lastCommit = featureDataset.data[featureDataset.data.length - 1];
+        featureDataset.data.push({ x: lastCommit.x + 1, y: 1, c: `F${commitCounter++}` });
+        branchingChart.update();
+    });
+
+    document.getElementById('btnMergeBranch').addEventListener('click', () => {
+        if (featureBranchExists) {
+            const mainDataset = chartData.datasets.find(ds => ds.label === 'main');
+            const featureDataset = chartData.datasets.find(ds => ds.label === 'fitur');
+            const lastMainCommit = mainDataset.data[mainDataset.data.length - 1];
+            const lastFeatureCommit = featureDataset.data[featureDataset.data.length - 1];
+            
+            const mergeCommitX = Math.max(lastMainCommit.x, lastFeatureCommit.x) + 1;
+            const mergeCommit = { x: mergeCommitX, y: 0, c: `M${commitCounter++}` };
+            
+            featureDataset.data.push({ ...mergeCommit });
+            mainDataset.data.push({ ...lastFeatureCommit, x: lastFeatureCommit.x, y: 1 });
+            mainDataset.data.push({ ...mergeCommit });
+            
+            chartData.datasets = chartData.datasets.filter(ds => ds.label !== 'fitur');
+            
+            branchingChart.update();
+            featureBranchExists = false;
+            document.getElementById('btnMergeBranch').disabled = true;
+            document.getElementById('btnCommitFeature').disabled = true;
+        }
+    });
+
+    document.getElementById('btnResetChart').addEventListener('click', resetChart);
+
+    resetChart(); // Initial load
+
+    // Terminal Simulator Logic
+    const terminalOutputEl = document.getElementById('terminalOutput');
+    const workflowBtns = document.querySelectorAll('.workflow-btn');
+    let workflowState = 0;
+
+    const terminalCommands = {
+        init: {
+            command: 'git init',
+            output: 'Initialized empty Git repository in /proyek-saya/.git/'
+        },
+        status1: {
+            command: 'git status',
+            output: `On branch main\n\nNo commits yet\n\nUntracked files:\n  (use "git add <file>..." to include in what will be committed)\n\n\t<span class="text-red-400">index.html</span>\n\tnothing added to commit but untracked files present (use "git add" to track)`
+        },
+        add: {
+            command: 'git add .',
+            output: ''
+        },
+        status2: {
+            command: 'git status',
+            output: `On branch main\n\nNo commits yet\n\nChanges to be committed:\n  (use "git rm --cached <file>..." to unstage)\n\n\t<span class="text-green-400">new file:   index.html</span>\n`
+        },
+        commit: {
+            command: 'git commit -m "feat: Buat file index awal"',
+            output: '[main (root-commit) 1a2b3c4] feat: Buat file index awal\n 1 file changed, 1 insertion(+)\n create mode 100644 index.html'
+        },
+        log: {
+            command: 'git log --oneline',
+            output: '<span class="text-yellow-400">1a2b3c4</span> (HEAD -> main) feat: Buat file index awal'
+        },
+    };
+
+    const typeInTerminal = (cmd, output) => {
+        const prompt = document.createElement('div');
+        prompt.innerHTML = `<span class="terminal-prompt">$ </span><span class="terminal-command">${cmd}</span>`;
+        terminalOutputEl.appendChild(prompt);
+        if (output) {
+            const out = document.createElement('div');
+            out.innerHTML = output;
+            terminalOutputEl.appendChild(out);
+        }
+        terminalOutputEl.scrollTop = terminalOutputEl.scrollHeight;
+    };
+
+    const resetTerminal = () => {
+        terminalOutputEl.innerHTML = '<div>Selamat datang di Simulator Terminal Git!</div><div>Klik tombol di bawah untuk memulai.</div>';
+        workflowState = 0;
+        workflowBtns.forEach((btn, index) => {
+            if (index > 0 && !btn.dataset.command.includes('reset')) {
+                btn.classList.add('bg-gray-400');
+                btn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                btn.disabled = true;
+            } else if (index === 0) {
+                 btn.classList.remove('bg-gray-400');
+                 btn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                 btn.disabled = false;
+            }
+        });
+    }
+
+    workflowBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            const commandKey = btn.dataset.command;
+            if (commandKey === 'reset') {
+                resetTerminal();
+                return;
+            }
+
+            const { command, output } = terminalCommands[commandKey];
+            typeInTerminal(command, output);
+            btn.disabled = true;
+            btn.classList.add('bg-gray-400');
+            btn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+            
+            const nextBtn = workflowBtns[index + 1];
+            if (nextBtn && !nextBtn.dataset.command.includes('reset')) {
+                 nextBtn.disabled = false;
+                 nextBtn.classList.remove('bg-gray-400');
+                 nextBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+            }
+        });
+    });
+
+});
+</script>
+</body>
+</html>
